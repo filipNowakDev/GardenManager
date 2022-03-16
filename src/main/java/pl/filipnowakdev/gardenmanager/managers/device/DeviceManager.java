@@ -1,43 +1,46 @@
 package pl.filipnowakdev.gardenmanager.managers.device;
 
-import org.springframework.stereotype.Service;
-import pl.filipnowakdev.gardenmanager.model.device.Device;
-import pl.filipnowakdev.gardenmanager.repository.device.DeviceRepository;
+import com.mongodb.client.result.DeleteResult;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Component;
+import pl.filipnowakdev.gardenmanager.model.device.DeviceConfig;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+@Component
 public class DeviceManager {
 
-    private final DeviceRepository repository;
+    private final MongoOperations mongoOps;
 
-    public DeviceManager(DeviceRepository repository) {
-        this.repository = repository;
+    public DeviceManager(MongoOperations mongoOps) {
+        this.mongoOps = mongoOps;
     }
 
-    public List<Device> getAll() {
-        return repository.findAll();
+    public List<DeviceConfig> getAll() {
+        return mongoOps.findAll(DeviceConfig.class);
     }
 
-    public Optional<Device> getById(String id) {
-        return repository.findById(id);
+    public Optional<DeviceConfig> getById(String id) {
+        return Optional.ofNullable(mongoOps.findById(id, DeviceConfig.class));
     }
 
-    public Device insertDevice(Device device) {
-        return repository.save(device);
+    public DeviceConfig insertDevice(DeviceConfig device) {
+        return mongoOps.insert(device);
     }
 
-    public Device updateDevice(Device device) {
-        Device currentDevice = repository.findById(device.getId()).orElseThrow(DeviceNotFoundException::new);
-        currentDevice.setName(device.getName());
-        currentDevice.setType(device.getType());
-        repository.save(currentDevice);
+    public DeviceConfig updateDevice(DeviceConfig device) {
+        DeviceConfig currentDevice = Optional.ofNullable(mongoOps.findById(device.getId(), DeviceConfig.class)).orElseThrow(DeviceNotFoundException::new);
+        mongoOps.save(device);
         return currentDevice;
     }
 
-    public void deleteDevice(String id) {
-        repository.deleteById(id);
+    public boolean deleteDevice(String id) {
+        DeleteResult result = mongoOps.remove(Query.query(where("_id").is(id)), DeviceConfig.class);
+        return result.getDeletedCount() == 1;
     }
 
 
