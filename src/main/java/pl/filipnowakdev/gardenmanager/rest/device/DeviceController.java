@@ -1,23 +1,23 @@
 package pl.filipnowakdev.gardenmanager.rest.device;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.filipnowakdev.gardenmanager.managers.device.DeviceManager;
-import pl.filipnowakdev.gardenmanager.managers.device.DeviceNotFoundException;
+import pl.filipnowakdev.gardenmanager.exception.EntityAlreadyExistsException;
+import pl.filipnowakdev.gardenmanager.exception.EntityNotFoundException;
+import pl.filipnowakdev.gardenmanager.managers.device.DeviceConfigManager;
 import pl.filipnowakdev.gardenmanager.model.device.DeviceConfig;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/devices")
 public class DeviceController {
 
-    private final DeviceManager manager;
+    private final DeviceConfigManager manager;
 
-    public DeviceController(DeviceManager manager) {
+    public DeviceController(DeviceConfigManager manager) {
         this.manager = manager;
     }
 
@@ -34,16 +34,20 @@ public class DeviceController {
     }
 
     @PostMapping
-    ResponseEntity<DeviceConfig> insertDevice(@RequestBody DeviceConfig device) throws URISyntaxException {
-        DeviceConfig insertedDevice = manager.insertDevice(device);
-        return ResponseEntity.created(new URI("/devices/" + insertedDevice.getId())).body(device);
+    ResponseEntity<DeviceConfig> insertDevice(@RequestBody DeviceConfig device) {
+        try {
+            DeviceConfig insertedDevice = manager.insertDevice(device);
+            return ResponseEntity.status(HttpStatus.CREATED).body(insertedDevice);
+        } catch (EntityAlreadyExistsException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PutMapping()
     public ResponseEntity<DeviceConfig> updateDevice(@RequestBody DeviceConfig device) {
         try {
             return ResponseEntity.ok(manager.updateDevice(device));
-        } catch (DeviceNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -53,6 +57,4 @@ public class DeviceController {
         boolean deleted = manager.deleteDevice(id);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
-
-
 }

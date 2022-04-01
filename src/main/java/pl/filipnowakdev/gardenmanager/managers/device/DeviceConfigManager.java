@@ -1,9 +1,12 @@
 package pl.filipnowakdev.gardenmanager.managers.device;
 
 import com.mongodb.client.result.DeleteResult;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
+import pl.filipnowakdev.gardenmanager.exception.EntityAlreadyExistsException;
+import pl.filipnowakdev.gardenmanager.exception.EntityNotFoundException;
 import pl.filipnowakdev.gardenmanager.model.device.DeviceConfig;
 
 import java.util.List;
@@ -12,11 +15,11 @@ import java.util.Optional;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Component
-public class DeviceManager {
+public class DeviceConfigManager {
 
     private final MongoOperations mongoOps;
 
-    public DeviceManager(MongoOperations mongoOps) {
+    public DeviceConfigManager(MongoOperations mongoOps) {
         this.mongoOps = mongoOps;
     }
 
@@ -29,11 +32,15 @@ public class DeviceManager {
     }
 
     public DeviceConfig insertDevice(DeviceConfig device) {
-        return mongoOps.insert(device);
+        try {
+            return mongoOps.insert(device);
+        } catch (DuplicateKeyException ex) {
+            throw new EntityAlreadyExistsException();
+        }
     }
 
     public DeviceConfig updateDevice(DeviceConfig device) {
-        DeviceConfig currentDevice = Optional.ofNullable(mongoOps.findById(device.getId(), DeviceConfig.class)).orElseThrow(DeviceNotFoundException::new);
+        DeviceConfig currentDevice = Optional.ofNullable(mongoOps.findById(device.getId(), DeviceConfig.class)).orElseThrow(EntityNotFoundException::new);
         mongoOps.save(device);
         return currentDevice;
     }
