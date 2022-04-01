@@ -32,7 +32,7 @@ public class MqttBrokerConfigManager {
         return Optional.ofNullable(mongoOps.findById(id, MqttBrokerConfig.class));
     }
 
-    public MqttBrokerConfig insertBroker(MqttBrokerConfig broker) {
+    public MqttBrokerConfig insert(MqttBrokerConfig broker) {
         try {
             return mongoOps.insert(broker);
         } catch (DuplicateKeyException ex) {
@@ -40,13 +40,13 @@ public class MqttBrokerConfigManager {
         }
     }
 
-    public MqttBrokerConfig updateBroker(MqttBrokerConfig broker) {
+    public MqttBrokerConfig update(MqttBrokerConfig broker) {
         MqttBrokerConfig currentBroker = Optional.ofNullable(mongoOps.findById(broker.getId(), MqttBrokerConfig.class)).orElseThrow(EntityNotFoundException::new);
         mongoOps.save(broker);
         return currentBroker;
     }
 
-    public boolean deleteBroker(String id) {
+    public boolean delete(String id) {
         DeleteResult result = mongoOps.remove(Query.query(where("_id").is(id)), MqttBrokerConfig.class);
         return result.getDeletedCount() == 1;    }
 }

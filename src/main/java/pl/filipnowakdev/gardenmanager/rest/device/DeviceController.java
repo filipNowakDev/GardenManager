@@ -22,21 +22,21 @@ public class DeviceController {
     }
 
     @GetMapping
-    public List<DeviceConfig> getAllDevices() {
+    public List<DeviceConfig> getAll() {
         return manager.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeviceConfig> getDevice(@PathVariable String id) {
+    public ResponseEntity<DeviceConfig> getById(@PathVariable String id) {
         return manager.getById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    ResponseEntity<DeviceConfig> insertDevice(@RequestBody DeviceConfig device) {
+    ResponseEntity<DeviceConfig> insert(@RequestBody DeviceConfig device) {
         try {
-            DeviceConfig insertedDevice = manager.insertDevice(device);
+            DeviceConfig insertedDevice = manager.insert(device);
             return ResponseEntity.status(HttpStatus.CREATED).body(insertedDevice);
         } catch (EntityAlreadyExistsException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -44,17 +44,17 @@ public class DeviceController {
     }
 
     @PutMapping()
-    public ResponseEntity<DeviceConfig> updateDevice(@RequestBody DeviceConfig device) {
+    public ResponseEntity<DeviceConfig> update(@RequestBody DeviceConfig device) {
         try {
-            return ResponseEntity.ok(manager.updateDevice(device));
+            return ResponseEntity.ok(manager.update(device));
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDevice(@PathVariable String id) {
-        boolean deleted = manager.deleteDevice(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = manager.delete(id);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

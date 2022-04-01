@@ -15,7 +15,7 @@ import pl.filipnowakdev.gardenmanager.model.device.DeviceConfig;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,19 +39,19 @@ class DeviceControllerTest {
                 mock(DeviceConfig.class)
         ));
 
-        List<DeviceConfig> result = deviceController.getAllDevices();
+        List<DeviceConfig> result = deviceController.getAll();
 
-        assertNotNull(result);
-        assertEquals(3, result.size());
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(3);
     }
 
     @Test
     void getAllDevicesEmptyList() {
         when(deviceConfigManager.getAll()).thenReturn(List.of());
-        List<DeviceConfig> result = deviceController.getAllDevices();
+        List<DeviceConfig> result = deviceController.getAll();
 
-        assertNotNull(result);
-        assertEquals(0, result.size());
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -59,86 +59,86 @@ class DeviceControllerTest {
         DeviceConfig mockDeviceConfig = mock(DeviceConfig.class);
         when(deviceConfigManager.getById(any())).thenReturn(Optional.of(mockDeviceConfig));
 
-        ResponseEntity<DeviceConfig> result = deviceController.getDevice(TEST_ID);
+        ResponseEntity<DeviceConfig> result = deviceController.getById(TEST_ID);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertSame(mockDeviceConfig, result.getBody());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isSameAs(mockDeviceConfig);
     }
 
     @Test
     void getDeviceNotExistingDevice() {
         when(deviceConfigManager.getById(any())).thenReturn(Optional.empty());
 
-        ResponseEntity<DeviceConfig> result = deviceController.getDevice(TEST_ID);
+        ResponseEntity<DeviceConfig> result = deviceController.getById(TEST_ID);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     void insertDevice() {
         DeviceConfig mockDeviceConfig = mock(DeviceConfig.class);
-        when(deviceConfigManager.insertDevice(any())).thenReturn(mockDeviceConfig);
+        when(deviceConfigManager.insert(any())).thenReturn(mockDeviceConfig);
 
-        ResponseEntity<DeviceConfig> result = deviceController.insertDevice(mockDeviceConfig);
+        ResponseEntity<DeviceConfig> result = deviceController.insert(mockDeviceConfig);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertSame(mockDeviceConfig, result.getBody());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(result.getBody()).isSameAs(mockDeviceConfig);
     }
 
     @Test
     void insertDeviceDeviceAlreadyExists() {
         DeviceConfig mockDeviceConfig = mock(DeviceConfig.class);
-        when(deviceConfigManager.insertDevice(any())).thenThrow(new EntityAlreadyExistsException());
+        when(deviceConfigManager.insert(any())).thenThrow(new EntityAlreadyExistsException());
 
-        ResponseEntity<DeviceConfig> result = deviceController.insertDevice(mockDeviceConfig);
+        ResponseEntity<DeviceConfig> result = deviceController.insert(mockDeviceConfig);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
     @Test
     void updateDevice() {
         DeviceConfig mockDeviceConfig = mock(DeviceConfig.class);
-        when(deviceConfigManager.updateDevice(any())).thenReturn(mockDeviceConfig);
+        when(deviceConfigManager.update(any())).thenReturn(mockDeviceConfig);
 
-        ResponseEntity<DeviceConfig> result = deviceController.updateDevice(mockDeviceConfig);
+        ResponseEntity<DeviceConfig> result = deviceController.update(mockDeviceConfig);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(mockDeviceConfig, result.getBody());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isSameAs(mockDeviceConfig);
     }
 
     @Test
     void updateDeviceNotExists() {
         DeviceConfig mockDeviceConfig = mock(DeviceConfig.class);
-        when(deviceConfigManager.updateDevice(any())).thenThrow(new EntityNotFoundException());
+        when(deviceConfigManager.update(any())).thenThrow(new EntityNotFoundException());
 
-        ResponseEntity<DeviceConfig> result = deviceController.updateDevice(mockDeviceConfig);
+        ResponseEntity<DeviceConfig> result = deviceController.update(mockDeviceConfig);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     void deleteDevice() {
-        when(deviceConfigManager.deleteDevice(any())).thenReturn(true);
+        when(deviceConfigManager.delete(any())).thenReturn(true);
 
-        ResponseEntity<Void> result = deviceController.deleteDevice(TEST_ID);
+        ResponseEntity<Void> result = deviceController.delete(TEST_ID);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     void deleteDeviceNotExists() {
-        when(deviceConfigManager.deleteDevice(any())).thenReturn(false);
+        when(deviceConfigManager.delete(any())).thenReturn(false);
 
-        ResponseEntity<Void> result = deviceController.deleteDevice(TEST_ID);
+        ResponseEntity<Void> result = deviceController.delete(TEST_ID);
 
-        assertNotNull(result);
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertThat(result).isNotNull();
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

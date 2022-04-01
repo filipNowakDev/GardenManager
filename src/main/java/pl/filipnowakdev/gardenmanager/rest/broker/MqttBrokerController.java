@@ -9,8 +9,6 @@ import pl.filipnowakdev.gardenmanager.exception.EntityNotFoundException;
 import pl.filipnowakdev.gardenmanager.managers.broker.MqttBrokerConfigManager;
 import pl.filipnowakdev.gardenmanager.model.broker.mqtt.MqttBrokerConfig;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -25,39 +23,39 @@ public class MqttBrokerController {
     }
 
     @GetMapping
-    public List<MqttBrokerConfig> getAllDevices() {
+    public List<MqttBrokerConfig> getAll() {
         return manager.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MqttBrokerConfig> getDevice(@PathVariable String id) {
+    public ResponseEntity<MqttBrokerConfig> getById(@PathVariable String id) {
         return manager.getById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    ResponseEntity<MqttBrokerConfig> insertDevice(@RequestBody MqttBrokerConfig brokerConfig) throws URISyntaxException {
+    ResponseEntity<MqttBrokerConfig> insert(@RequestBody MqttBrokerConfig brokerConfig) {
         try {
-            MqttBrokerConfig insertedDevice = manager.insertBroker(brokerConfig);
-            return ResponseEntity.created(new URI("/devices/" + insertedDevice.getId())).body(brokerConfig);
+            MqttBrokerConfig insertedConfig = manager.insert(brokerConfig);
+            return ResponseEntity.status(HttpStatus.CREATED).body(insertedConfig);
         } catch (EntityAlreadyExistsException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @PutMapping()
-    public ResponseEntity<MqttBrokerConfig> updateDevice(@RequestBody MqttBrokerConfig device) {
+    public ResponseEntity<MqttBrokerConfig> update(@RequestBody MqttBrokerConfig device) {
         try {
-            return ResponseEntity.ok(manager.updateBroker(device));
+            return ResponseEntity.ok(manager.update(device));
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDevice(@PathVariable String id) {
-        boolean deleted = manager.deleteBroker(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean deleted = manager.delete(id);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

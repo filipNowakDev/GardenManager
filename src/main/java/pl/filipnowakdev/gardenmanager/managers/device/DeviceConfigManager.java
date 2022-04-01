@@ -31,7 +31,7 @@ public class DeviceConfigManager {
         return Optional.ofNullable(mongoOps.findById(id, DeviceConfig.class));
     }
 
-    public DeviceConfig insertDevice(DeviceConfig device) {
+    public DeviceConfig insert(DeviceConfig device) {
         try {
             return mongoOps.insert(device);
         } catch (DuplicateKeyException ex) {
@@ -39,13 +39,13 @@ public class DeviceConfigManager {
         }
     }
 
-    public DeviceConfig updateDevice(DeviceConfig device) {
+    public DeviceConfig update(DeviceConfig device) {
         DeviceConfig currentDevice = Optional.ofNullable(mongoOps.findById(device.getId(), DeviceConfig.class)).orElseThrow(EntityNotFoundException::new);
         mongoOps.save(device);
         return currentDevice;
     }
 
-    public boolean deleteDevice(String id) {
+    public boolean delete(String id) {
         DeleteResult result = mongoOps.remove(Query.query(where("_id").is(id)), DeviceConfig.class);
         return result.getDeletedCount() == 1;
     }
