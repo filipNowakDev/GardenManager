@@ -12,7 +12,7 @@ import pl.filipnowakdev.gardenmanager.model.device.DeviceConfig;
 import java.util.List;
 
 @RestController
-@RequestMapping("/devices")
+@RequestMapping("/api/devices")
 public class DeviceController {
 
     private final DeviceConfigManager manager;

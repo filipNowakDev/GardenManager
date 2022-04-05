@@ -12,7 +12,7 @@ import pl.filipnowakdev.gardenmanager.model.broker.mqtt.MqttBrokerConfig;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mqtt-brokers")
+@RequestMapping("/api/mqtt-brokers")
 public class MqttBrokerController {
 
     private final MqttBrokerConfigManager manager;

@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class MqttDeviceConfig implements DeviceTypeConfig{
+public class MqttDeviceConfig implements DeviceTypeConfig {
 
     @NonNull
     private String brokerId;
