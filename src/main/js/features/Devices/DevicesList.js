@@ -1,9 +1,11 @@
 import React from 'react';
+import { Table } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import Device from './Device';
+import { selectAllDevices } from './devicesSlice';
 
 export const DevicesList = () => {
-    const devices = useSelector(state => state.devices);
+    const devices = useSelector(selectAllDevices);
 
     const renderedDevices = devices.map(device =>
         <Device key={device.id} device={device} />
@@ -12,17 +14,16 @@ export const DevicesList = () => {
     return (
         <div>
             <h2>Devices</h2>
-            <table>
+            <Table striped bordered hover>
                 <tbody>
                     <tr>
                         <th>Name</th>
                         <th>Type</th>
-                        <th>Details</th>
-                        <th>Edit</th>
+                        <th>Actions</th>
                     </tr>
                     {renderedDevices}
                 </tbody>
-            </table>
+            </Table>
         </div>
     );
 }

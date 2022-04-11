@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Navbar } from './app/Navbar'
+import { NavigationBar } from './app/NavigationBar'
 
 
 function App() {
 	return (
 		<div>
-			<Navbar />
+			<NavigationBar />
 			<Outlet />
 		</div>
 	)

@@ -2,13 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { selectDeviceById } from './devicesSlice';
 
 export const DeviceDetailsPage = () => {
     let params = useParams();
 
-    const device = useSelector(state => 
-        state.devices.find(device => device.id === params.deviceId)
-    )
+    const device = useSelector(state => selectDeviceById(state, params.deviceId))
 
     if (!device) {
         return (

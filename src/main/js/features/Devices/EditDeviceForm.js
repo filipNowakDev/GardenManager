@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deviceUpdated } from './devicesSlice';
+import { deviceUpdated, selectDeviceById } from './devicesSlice';
 
 export const EditDeviceForm = () => {
     let params = useParams();
 
-    const device = useSelector(state => 
-        state.devices.find(device => device.id === params.deviceId)
-    )
+    const device = useSelector(state => selectDeviceById(state, params.deviceId))
 
     const [name, setName] = useState(device.name);
     const [type, setType] = useState(device.type);

@@ -1,18 +1,22 @@
 import React from 'react';
 import { DevicesList } from './DevicesList';
-import { Navbar } from '../../app/Navbar';
-import {AddDeviceForm} from './AddDeviceForm';
+import { AddDeviceForm } from './AddDeviceForm';
+import { Col, Container, Row } from 'react-bootstrap';
 
 function DevicesPage() {
-	return (
-		<div>
-            <h1>Manage Devices</h1>
-			<div>
-                <AddDeviceForm />
-			    <DevicesList />
-			</div>
-		</div>
-	)
+    return (
+
+        <Container fluid='md'>
+            <Row>
+                <Col sm={8}>
+                    <DevicesList />
+                </Col>
+                <Col sm={4}>
+                    <AddDeviceForm />
+                </Col>
+            </Row>
+        </Container>
+    )
 }
 
 export default DevicesPage;

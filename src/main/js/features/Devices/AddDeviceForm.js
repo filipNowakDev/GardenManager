@@ -1,5 +1,6 @@
 import { nanoid } from '@reduxjs/toolkit';
 import React, { useState } from 'react';
+import { Button, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { deviceAdded } from './devicesSlice';
 
@@ -25,25 +26,30 @@ export const AddDeviceForm = () => {
     return (
         <section>
             <h2>Add a new device</h2>
-            <form>
-                <label htmlFor="deviceName">Device name:</label>
-                <input
-                    type="text"
-                    id="deviceName"
-                    name="deviceName"
-                    value={name}
-                    onChange={onNameChanged}
-                />
-                <label htmlFor="deviceType">Device type:</label>
-                <input
-                    type="text"
-                    id="deviceType"
-                    name="deviceType"
-                    value={type}
-                    onChange={onTypeChanged}
-                />
-                <button type="button" onClick={onSubmit}>Save Device</button>
-            </form>
+            <Form>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="deviceName">Device name:</Form.Label>
+                    <Form.Control
+                        type="text"
+                        id="deviceName"
+                        name="deviceName"
+                        value={name}
+                        onChange={onNameChanged}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="deviceType">Device type:</Form.Label>
+                    <Form.Control
+                        type="text"
+                        id="deviceType"
+                        name="deviceType"
+                        value={type}
+                        onChange={onTypeChanged}
+                    />
+                </Form.Group>
+
+                <Button variant="primary" type="button" onClick={onSubmit}>Save Device</Button>
+            </Form>
         </section>
     );
 }

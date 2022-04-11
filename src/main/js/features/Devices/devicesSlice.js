@@ -32,5 +32,7 @@ const devicesSlice = createSlice({
 });
 
 export const {deviceAdded, deviceUpdated} = devicesSlice.actions;
+export const selectAllDevices = state => state.devices;
+export const selectDeviceById = (state, deviceId) => state.devices.find(device => device.id == deviceId)
 
 export default devicesSlice.reducer;
